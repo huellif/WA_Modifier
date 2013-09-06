@@ -1,0 +1,44 @@
+<RCC>
+    <qresource prefix="/">
+        <file>whatsapp_notifier.rsc</file>
+        <file>splash.jpg</file>
+        <file>qml/AboutDialog.qml</file>
+        <file>qml/CloseDialog.qml</file>
+        <file>qml/CoverFlow.qml</file>
+        <file>qml/Dialog.qml</file>
+        <file>qml/icons.qml</file>
+        <file>qml/main.qml</file>
+        <file>qml/MainPage.qml</file>
+        <file>qml/RebootDialog.qml</file>
+        <file>qml/RemoveDialog.qml</file>
+        <file>qml/images/back.svg</file>
+        <file>qml/images/close.svg</file>
+        <file>qml/images/delete.svg</file>
+        <file>qml/images/info.svg</file>
+        <file>qml/images/note_info.svg</file>
+        <file>qml/images/refresh.svg</file>
+        <file>qml/pics/0.png</file>
+        <file>qml/pics/1.svg</file>
+        <file>qml/pics/2.svg</file>
+        <file>qml/pics/3.svg</file>
+        <file>qml/pics/4.svg</file>
+        <file>qml/pics/5.svg</file>
+        <file>qml/pics/6.svg</file>
+        <file>qml/pics/7.svg</file>
+        <file>qml/pics/8.svg</file>
+        <file>qml/pics/9.svg</file>
+        <file>qml/pics/10.svg</file>
+        <file>qml/pics/11.svg</file>
+        <file>qml/pics/12.svg</file>
+        <file>qml/pics/13.svg</file>
+        <file>qml/pics/14.svg</file>
+        <file>qml/pics/15.svg</file>
+        <file>qml/pics/16.svg</file>
+        <file>qml/pics/17.svg</file>
+        <file>qml/pics/18.svg</file>
+        <file>qml/pics/19.svg</file>
+        <file>qml/pics/20.svg</file>
+        <file>qml/pics/21.svg</file>
+        <file>qml/pics/22.svg</file>
+    </qresource>
+</RCC>
