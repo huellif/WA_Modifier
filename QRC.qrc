@@ -11,6 +11,8 @@
         <file>qml/MainPage.qml</file>
         <file>qml/RebootDialog.qml</file>
         <file>qml/RemoveDialog.qml</file>
+        <file>qml/settings.qml</file>
+        <file>qml/settings.js</file>
         <file>qml/images/back.svg</file>
         <file>qml/images/close.svg</file>
         <file>qml/images/delete.svg</file>

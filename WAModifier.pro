@@ -8,7 +8,7 @@ my_deployment.pkg_prerules += vendorinfo
 DEPLOYMENT += my_deployment addFiles
 DEPLOYMENT.display_name += WA_Modifier
 vendorinfo += "%{\"huellif\"}" ":\"huellif\""
-VERSION = 1.2.0
+VERSION = 1.3.0
 TARGET.CAPABILITY += PowerMgmt #to kill processes and reboot the phone
 LIBS += -lavkon -lefsrv -lbafl -apgrfx.lib #needed Symbian libs
 
@@ -56,8 +56,7 @@ qtcAddDeployment()
 HEADERS += helper.h
 
 #show .qml fils only in QtCreator, not in .sis build
-OTHER_FILES += qml/*.qml
-
+OTHER_FILES += qml/*.*
 
 #to prevent compiler errors with popups and Belle SDK
 gccOption = "OPTION gcce -fpermissive"

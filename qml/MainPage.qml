@@ -6,8 +6,16 @@ tools: ToolBarLayout {
 ToolButton {
 iconSource: "images/close.svg"
 property Component __CloseDialog: null
-onClicked:{ if (!__CloseDialog) __CloseDialog = Qt.createComponent("CloseDialog.qml")
+onClicked:{
+if (set_tool == false){
+    Qt.quit();
+}
+if (!__CloseDialog) __CloseDialog = Qt.createComponent("CloseDialog.qml")
 __CloseDialog.createObject(mainPage)}
+}
+ToolButton {
+iconSource: "toolbar-settings"
+onClicked: pageStack.push(Qt.resolvedUrl("settings.qml"))
 }
 ToolButton {
 iconSource: "images/info.svg"
