@@ -8,7 +8,7 @@ my_deployment.pkg_prerules += vendorinfo
 DEPLOYMENT += my_deployment addFiles
 DEPLOYMENT.display_name += WA_Modifier
 vendorinfo += "%{\"huellif\"}" ":\"huellif\""
-VERSION = 1.3.1
+VERSION = 1.4
 TARGET.CAPABILITY += PowerMgmt #to kill processes and reboot the phone
 LIBS += -lavkon -lefsrv -lbafl -apgrfx.lib #needed Symbian libs
 

@@ -51,37 +51,29 @@ anchors.centerIn: parent
 }
 }
 ListItem {
-onClicked: {
-Helper.close()
-Helper.reset()
-Helper.hide()
-}
+onClicked: Helper.hide()
 ListItemText {
 role: "Title"
-text: qsTr("Hide Homescreen popup")
+text: qsTr("Hide homescreen popup")
+anchors.centerIn: parent
+}
+}
+ListItem {
+onClicked: Helper.resetNote()
+ListItemText {
+role: "Title"
+text: qsTr("Show homescreen popup")
 anchors.centerIn: parent
 }
 }
 ListItem {
 onClicked: {
-Helper.close()
-Helper.reset()
-Helper.resetNote()
+pageStack.push(Qt.resolvedUrl("icons.qml"));
+Helper.note()
 }
 ListItemText {
 role: "Title"
-text: qsTr("Show Homescreen popup")
-anchors.centerIn: parent
-}
-}
-ListItem {
-onClicked: {
-    pageStack.push(Qt.resolvedUrl("icons.qml"));
-    Helper.note()
-}
-ListItemText {
-role: "Title"
-text: "Change Icons"
+text: "Change icons"
 anchors.centerIn: parent
 }
 }
@@ -92,4 +84,3 @@ anchors.horizontalCenter: parent.horizontalCenter
 }
 }
 }
-

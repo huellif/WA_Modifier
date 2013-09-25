@@ -8,8 +8,6 @@ iconSource: "toolbar-back"
 onClicked: pageStack.pop();
 }
 }
-Flickable {
-anchors.fill: parent
 Column {
 ListHeading {
 ListItemText {
@@ -22,7 +20,7 @@ ListItem {
 enabled: false
 ListItemText {
 role: "Title"
-text: "Show close Dialog"
+text: "Show close dialog"
 anchors.verticalCenter: parent.verticalCenter
 }
 Switch {
@@ -33,6 +31,22 @@ onClicked: {
 set_tool = checked;
 Setting.set("tool",checked)
 }
+}
+}
+ListItem {
+enabled: false
+ListItemText {
+role: "Title"
+text: "Show fullscreen"
+anchors.verticalCenter: parent.verticalCenter
+}
+Switch {
+anchors.verticalCenter: parent.verticalCenter
+anchors.right: parent.right
+checked: set_tool2
+onClicked: {
+set_tool2 = checked;
+Setting.set("tool2",checked)
 }
 }
 }

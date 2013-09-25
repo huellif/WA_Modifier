@@ -7,7 +7,7 @@
 #include <QtGui/QPixmap>
 
 
-Q_DECL_EXPORT int main(int argc, char *argv[])
+int main(int argc, char *argv[])
 {
     QScopedPointer<QApplication> app(createApplication(argc, argv));
 
@@ -16,10 +16,10 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     splash->show();
     splash->showMessage("Loading ...", Qt::AlignHCenter | Qt::AlignBottom, Qt::white);
 
-    //creatining UI
+    //creatining UI object
     QmlApplicationViewer viewer;
 
-    //loading helper class for QtQuick UI
+    //loading helper class for QtQuick UI to Qt/C++ access
     Helper helper;
     viewer.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     viewer.rootContext()->setContextProperty("Helper", &helper);
@@ -38,6 +38,6 @@ Q_DECL_EXPORT int main(int argc, char *argv[])
     splash->finish(&viewer);
     splash->deleteLater();
 
-    //app has to stay alive
+    //app has to stay alive ;)
     return app->exec();
 }
