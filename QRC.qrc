@@ -42,5 +42,7 @@
         <file>qml/pics/20.svg</file>
         <file>qml/pics/21.svg</file>
         <file>qml/pics/22.svg</file>
+        <file>mifs/BlackBerry_flat.mif</file>
+        <file>qml/pics/5.5.svg</file>
     </qresource>
 </RCC>

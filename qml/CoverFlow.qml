@@ -21,14 +21,11 @@ __Dialog.createObject(mainPage)}
 }
 front:
 Image {
-height: itemHeight
-width: itemWidth
-anchors.centerIn: parent
-source: icon
-smooth: true
-}
-}
-}
+height:itemHeight
+width:itemWidth
+anchors.centerIn:parent
+source:icon
+smooth:true}}}
 PathView {
 id: myPathView
 anchors.fill: parent
@@ -38,7 +35,7 @@ focus: true
 interactive: true
 model: listModel
 delegate: appDelegate
-path: Path {
+path: Path{
 startX: 0
 startY: coverFlow.height / 2
 PathAttribute { name: "z"; value: 0 }
@@ -49,12 +46,7 @@ PathAttribute { name: "angle"; value: 0 }
 PathAttribute { name: "iconScale"; value: 1.0 }
 PathLine { x: coverFlow.width; y: coverFlow.height / 2; }
 PathAttribute { name: "z"; value: 0 }
-PathAttribute { name: "iconScale"; value: 0.2 }
-}
-}
+PathAttribute { name: "iconScale"; value: 0.2 }}}
 Component.onCompleted: {
 myPathView.currentIndexChanged.connect(function(){
-indexChanged(myPathView.currentIndex);
-})
-}
-}
+indexChanged(myPathView.currentIndex)})}}
