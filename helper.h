@@ -156,7 +156,7 @@ public:
         fsSession.Close();
         CleanupStack::PopAndDestroy();
         CAknConfirmationNote* noteConfirm5 = new (ELeave) CAknConfirmationNote;
-        QT_TRAP_THROWING(noteConfirm5->ExecuteLD(_L("Removed all whatsapp_aif.mif fils.")));
+        QT_TRAP_THROWING(noteConfirm5->ExecuteLD(_L("Removed all whatsapp_aif.mif files.")));
     }
 
     Q_INVOKABLE void reboot(){
