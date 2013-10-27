@@ -7,7 +7,7 @@ privateCloseIcon:true
 message:"<p><center>Do really want to remove your current icon?</p>"
 acceptButtonText:"Remove"
 rejectButtonText:"Cancel"
-onAccepted: Helper.remove()
+onAccepted: Helper.del()
 onRejected: removeDialog.destroy()
 Component.onCompleted: open()
 onStatusChanged: {

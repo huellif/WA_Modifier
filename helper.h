@@ -1,23 +1,32 @@
 #ifndef HELPER_H
 #define HELPER_H
 #include <QObject>
+
 //file operations
-#include <QDir>
 #include <QFile>
-//to launch WhatsApp
-#include <QProcess>
+
 
 //Symbian headers
 //popups:
 #include <aknnotewrappers.h>
 #include <aknglobalnote.h>
 #include <akndiscreetpopup.h>
+
+
 //file operations:
 #include <e32base.h>
 #include <bautils.h>
 #include <f32file.h>
+#include <apgtask.h>
+#include <eikenv.h>
+#include <apgcli.h>
+
 //taskkiller:
 #include <apgtask.h>
+
+//icon cache
+#include <akniconconfig.h>
+#include <AknUtils.h>
 
 
 class Helper : public QObject
@@ -26,222 +35,154 @@ class Helper : public QObject
 public:
     Helper(QObject *parent = 0) : QObject(parent){ }
 
-
-    Q_INVOKABLE void launch(){ //launching WhatsApp
-        QProcess *myP = new QProcess;
-        myP->start("WhatsApp.exe");
+    Q_INVOKABLE void launch() const{ //launching WhatsApp
+        CApaCommandLine* commandLine = CApaCommandLine::NewLC();
+        commandLine->SetCommandL(EApaCommandRun);
+        commandLine->SetExecutableNameL(_L("WhatsApp.exe"));
+        RApaLsSession apaLsSession;
+        User::LeaveIfError(apaLsSession.Connect());
+        CleanupClosePushL(apaLsSession);
+        User::LeaveIfError(apaLsSession.StartApp(*commandLine));
+        CleanupStack::PopAndDestroy();
+        CleanupStack::PopAndDestroy(commandLine);
     }
 
-    Q_INVOKABLE void close2(){ //closing WhatsApp and show a note if it doesn't run
+    Q_INVOKABLE void close(bool hidden){ //closing WhatsApp and show a note if it doesn't run
         bool running = false;
 
         TFullName res;
         TFindProcess find;
-        while(find.Next(res) == KErrNone)
-        {
+        while(find.Next(res) == KErrNone) {
             RProcess ph;
             ph.Open(res);
-
             if(ph.SecureId() == 0x2002B30D)
-
-            if (ph.ExitType() == EExitPending)
-            {
+            if (ph.ExitType() == EExitPending) {
                 running = true;
                 break;
             }
-
-            ph.Close();
-    }
-
-    if (running == false)
-    {
-        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Error")), (_L("WhatsApp doesn't run.")),KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong));
-    }
-    else
-    {
-
-        CAknConfirmationNote* run = new (ELeave) CAknConfirmationNote;
-        QT_TRAP_THROWING(run->ExecuteLD(_L("Closed WhatsApp.")));
-
-        TFullName res1;
-        TFindProcess find1(_L("*[2002B306]*"));
-        while(find1.Next(res1) == KErrNone)
-        {
-            RProcess ph1;
-            ph1.Open(find1);
-            ph1.Kill(KErrNone);
-            ph1.Close();
-        }
-
-        TFullName res2;
-        TFindProcess find2(_L("*[2002B310]*"));
-        while(find2.Next(res2) == KErrNone)
-        {
-            RProcess ph2;
-            ph2.Open(find2);
-            ph2.Kill(KErrNone);
-            ph2.Close();
-        }
-
-        TFullName res3;
-        TFindProcess find3(_L("*[2002B30D]*"));
-        while(find3.Next(res3) == KErrNone)
-        {
-            RProcess ph3;
-            ph3.Open(find3);
-            ph3.Kill(KErrNone);
-            ph3.Close();
-        }
-        }
-    }
-
-
-    Q_INVOKABLE void close(){ //close WhatsApp, if it's running
-        bool running = false;
-
-        TFullName res;
-        TFindProcess find;
-        while(find.Next(res) == KErrNone)
-        {
-            RProcess ph;
-            ph.Open(res);
-
-            if(ph.SecureId() == 0x2002B30D)
-
-            if (ph.ExitType() == EExitPending)
-            {
-                running = true;
-                break;
-            }
-
             ph.Close();
         }
 
-    if (running == false)
-    {        
-    }
-    else
-    {
-
-        CAknConfirmationNote* run = new (ELeave) CAknConfirmationNote;
-        QT_TRAP_THROWING(run->ExecuteLD(_L("Closed WhatsApp.")));
-        TFullName res1;
-        TFindProcess find1(_L("*[2002B306]*"));
-        while(find1.Next(res1) == KErrNone)
-            {
-                    RProcess ph1;
-                    ph1.Open(find1);
-                    ph1.Kill(KErrNone);
-                    ph1.Close();
+        if (running == false) {
+            if (!hidden){
+                TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Error")), (_L("WhatsApp doesn't run.")),KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong));
             }
-
-        TFullName res2;
-        TFindProcess find2(_L("*[2002B310]*"));
-        while(find2.Next(res2) == KErrNone)
-            {
-                RProcess ph2;
-                ph2.Open(find2);
-                ph2.Kill(KErrNone);
-                ph2.Close();
-            }
-
-        TFullName res3;
-        TFindProcess find3(_L("*[2002B30D]*"));
-        while(find3.Next(res3) == KErrNone)
-            {
-                RProcess ph3;
-                ph3.Open(find3);
-                ph3.Kill(KErrNone);
-                ph3.Close();
-            }
+        }
+        else {
+            CAknConfirmationNote* killed = new (ELeave) CAknConfirmationNote;
+            QT_TRAP_THROWING(killed->ExecuteLD(_L("Closed WhatsApp.")));
+            kill("*[2002B306]*");
+            kill("*[2002B310]*");
+            kill("*[2002B30D]*");
         }
     }
 
     Q_INVOKABLE void hide(){ //copy the fake .rsc to C:\system\data and set it ReadOnly
-            close();
+            close(true);
             reset();
-            CAknConfirmationNote* noteConfirm = new (ELeave) CAknConfirmationNote;
-            QT_TRAP_THROWING(noteConfirm->ExecuteLD(_L("Disabled the popup.")));
+            CAknConfirmationNote* hidden = new (ELeave) CAknConfirmationNote;
+            QT_TRAP_THROWING(hidden->ExecuteLD(_L("Disabled the popup.")));
             QFile::copy(":/whatsapp_notifier.rsc", "C://system/data/whatsapp_notifier.rsc");
             RFs fsSession;
-            fsSession.Connect();
-            fsSession.SetAtt((_L("C:\\system\\data\\whatsapp_notifier.rsc")),KEntryAttReadOnly,KEntryAttHidden);
+            CleanupClosePushL(fsSession);
+            User::LeaveIfError(fsSession.Connect());
+            User::LeaveIfError(fsSession.SetAtt((_L("C:\\system\\data\\whatsapp_notifier.rsc")),KEntryAttHidden|KEntryAttSystem,KEntryAttArchive));
             fsSession.Close();
+            CleanupStack::PopAndDestroy();
         }
 
-    Q_INVOKABLE void reset(){ //reset the attributes of the .rsc and remove it
+    Q_INVOKABLE void reset() const{ //reset the attributes of the .rsc and remove it
             RFs fsSession;
-            fsSession.Connect();
-            fsSession.SetAtt((_L("C:\\system\\data\\whatsapp_notifier.rsc")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem);
+            CleanupClosePushL(fsSession);
+            User::LeaveIfError(fsSession.Connect());
+            fsSession.SetAtt((_L("C:\\system\\data\\whatsapp_notifier.rsc")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+            CFileMan* fileMan=CFileMan::NewL(fsSession);
+            CleanupStack::PushL(fileMan);
+            fileMan->Delete(_L("C:\\system\\data\\whatsapp_notifier.rsc"));
+            CleanupStack::PopAndDestroy(&fileMan);
             fsSession.Close();
-            QDir *myDir = new QDir;
-            myDir->remove("C://system/data/whatsapp_notifier.rsc");
+            CleanupStack::PopAndDestroy();
     }
 
     Q_INVOKABLE void resetNote(){ //note for enabling the popup
-        close();
+        close(true);
         reset();
         CAknConfirmationNote* noteConfirm = new (ELeave) CAknConfirmationNote;
         QT_TRAP_THROWING(noteConfirm->ExecuteLD(_L("Enabled the popup.")));
     }
 
-    Q_INVOKABLE void note(){ //info when opening .mif changer
+    Q_INVOKABLE void note() const{ //info when opening .mif changer
         TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Info:")), (_L("You have to enable Open4All patch!")),KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong));
     }
 
-    Q_INVOKABLE void icon(QString mif){ //change the current icon. QString mif is generated by the mif changer dialog,
+    Q_INVOKABLE void icon(QString mif) const{ //change the current icon. QString mif is generated by the mif changer dialog,
         RFs fsSession;
-        fsSession.Connect();
-        fsSession.SetAtt((_L("C:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem);
-        fsSession.SetAtt((_L("E:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem);
-        fsSession.SetAtt((_L("F:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem);
-
-        QDir *delFile2 = new QDir;
-        delFile2->remove("C://resource/apps/whatsapp_aif.mif");
-        delFile2->remove("E://resource/apps/whatsapp_aif.mif");
-        delFile2->remove("F://resource/apps/whatsapp_aif.mif");
-
+        CleanupClosePushL(fsSession);
+        User::LeaveIfError(fsSession.Connect());
+        fsSession.SetAtt((_L("C:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt((_L("E:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt((_L("F:\\resource\\apps\\whatsapp_aif.mif")), KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        CFileMan* fileMan=CFileMan::NewL(fsSession);
+        CleanupStack::PushL(fileMan);
+        fileMan->Delete(_L("C:\\resource\\apps\\whatsapp_aif.mif"));
+        fileMan->Delete(_L("E:\\resource\\apps\\whatsapp_aif.mif"));
+        fileMan->Delete(_L("F:\\resource\\apps\\whatsapp_aif.mif"));
         QString path = "E:\\icons\\" + mif + ".mif";
         TPtrC16 ipath(reinterpret_cast<const TUint16*>(path.utf16()));
-
-        CFileMan* fileMan=CFileMan::NewL(fsSession);
         fileMan->Copy(ipath,(_L("C:\\resource\\apps\\whatsapp_aif.mif")));
         fileMan->Copy(ipath,(_L("E:\\resource\\apps\\whatsapp_aif.mif")));
         fileMan->Copy(ipath,(_L("F:\\resource\\apps\\whatsapp_aif.mif")));
+        CleanupStack::PopAndDestroy(fileMan);
         fsSession.Close();
-
-        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Done.")), (_L("Copied new .mif file.")),KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong));
+        CleanupStack::PopAndDestroy();
+        QString newmif = "Copied " + mif + ".mif";
+        TPtrC16 note(reinterpret_cast<const TUint16*>(newmif.utf16()));
+        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Done.")), note ,KAknsIIDNone, KNullDesC, 0, 0, KAknDiscreetPopupDurationLong));
     }
 
-    Q_INVOKABLE void remove(){ //remove all WhatsApp .mif files
-
+    Q_INVOKABLE void del() const{
         RFs fsSession;
-        fsSession.Connect();
-        fsSession.SetAtt((_L("C:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem);
-        fsSession.SetAtt((_L("E:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem);
-        fsSession.SetAtt((_L("F:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem);
+        CleanupClosePushL(fsSession);
+        User::LeaveIfError(fsSession.Connect());
+        fsSession.SetAtt((_L("C:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt((_L("E:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt((_L("F:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        CFileMan* fileMan=CFileMan::NewL(fsSession);
+        CleanupStack::PushL(fileMan);
+        fileMan->Delete(_L("C:\\resource\\apps\\whatsapp_aif.mif"));
+        fileMan->Delete(_L("E:\\resource\\apps\\whatsapp_aif.mif"));
+        fileMan->Delete(_L("F:\\resource\\apps\\whatsapp_aif.mif"));
+        CleanupStack::PopAndDestroy(fileMan);
         fsSession.Close();
-
-        QDir *delFile2 = new QDir;
-        delFile2->remove("C://resource/apps/whatsapp_aif.mif");
-        delFile2->remove("E://resource/apps/whatsapp_aif.mif");
-        delFile2->remove("F://resource/apps/whatsapp_aif.mif");
-
+        CleanupStack::PopAndDestroy();
         CAknConfirmationNote* noteConfirm5 = new (ELeave) CAknConfirmationNote;
         QT_TRAP_THROWING(noteConfirm5->ExecuteLD(_L("Removed all whatsapp_aif.mif fils.")));
     }
 
     Q_INVOKABLE void reboot(){
-        TFullName res2;
-        TFindProcess find2(_L("*[100058F3]*"));
-        while(find2.Next(res2) == KErrNone)
-            {
-                RProcess ph2;
-                ph2.Open(find2);
-                ph2.Kill(KErrNone);
-                ph2.Close();
-            }
+        kill("*[100058F3]*");
     }
+
+    Q_INVOKABLE void clear() const{
+        AknIconConfig::EnableAknIconSrvCache(EFalse);
+        AknIconConfig::EnableAknIconSrvCache(ETrue);
+        CAknConfirmationNote* noteConfirm6 = new (ELeave) CAknConfirmationNote;
+        QT_TRAP_THROWING(noteConfirm6->ExecuteLD(_L("Done. Cleared icon cache. Readd the icon to homescreen to show the new one.")));
+    }
+private:
+
+    void kill(const QString &UID) const {
+        TPtrC16 symstring(reinterpret_cast<const TUint16*>(UID.utf16()));
+        TFullName res;
+        TFindProcess find(symstring);
+        while(find.Next(res) == KErrNone){
+            RProcess ph;
+            ph.Open(find);
+            ph.Kill(KErrNone);
+            ph.Close();
+        }
+    }
+
 };
 
 #endif // HELPER_H

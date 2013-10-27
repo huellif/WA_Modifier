@@ -9,7 +9,7 @@
 
 int main(int argc, char *argv[])
 {
-    QScopedPointer<QApplication> app(createApplication(argc, argv));
+    QApplication app(argc, argv);
 
     //Splashscreen
     QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash.jpg"));
@@ -39,5 +39,5 @@ int main(int argc, char *argv[])
     splash->deleteLater();
 
     //app has to stay alive ;)
-    return app->exec();
+    return app.exec();
 }

@@ -1,5 +1,6 @@
 QT += declarative
 symbian {
+HEADERS += helper.h
 #free UID from 0xE range
 TARGET.UID3 = 0xE3359D3D
 
@@ -8,9 +9,10 @@ my_deployment.pkg_prerules += vendorinfo
 DEPLOYMENT += my_deployment addFiles
 DEPLOYMENT.display_name += WA_Modifier
 vendorinfo += "%{\"huellif\"}" ":\"huellif\""
-VERSION = 1.5
-TARGET.CAPABILITY += PowerMgmt #to kill processes and reboot the phone
-LIBS += -lavkon -lefsrv -lbafl -apgrfx.lib #needed Symbian libs
+VERSION = 1.6.0
+TARGET.CAPABILITY += All -Tcb#to kill processes and reboot the phone
+LIBS += -lavkon -lefsrv -lbafl -lapgrfx -laknicon -laknskins -lapparc -lapmime#needed Symbian libs
+
 
 #adding files to E:\icons in .sis
 addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\BelleXblack.mif\" - \"E:\\icons\\BelleXblack.mif\""
@@ -54,11 +56,11 @@ include(qmlapplicationviewer/qmlapplicationviewer.pri)
 qtcAddDeployment()
 
 #helper class
-HEADERS += helper.h
+
 
 #show .qml fils only in QtCreator, not in .sis build
 OTHER_FILES += qml/*.*
 
 #to prevent compiler errors with popups and Belle SDK
-gccOption = "OPTION gcce -fpermissive"
-MMP_RULES += gccOption
+#gccOption = "OPTION gcce -fpermissive"
+#MMP_RULES += gccOption

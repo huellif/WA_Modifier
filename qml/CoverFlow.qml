@@ -16,9 +16,8 @@ scale: PathView.iconScale
 MouseArea {
 anchors.fill: parent
 property Component __Dialog: null
-onClicked:{ if (!__Dialog) __Dialog = Qt.createComponent("Dialog.qml")
-__Dialog.createObject(mainPage)}
-}
+onClicked:{__Dialog = Qt.createComponent("Dialog.qml")
+__Dialog.createObject(mainPage)}}
 front:
 Image {
 height:itemHeight
@@ -49,4 +48,4 @@ PathAttribute { name: "z"; value: 0 }
 PathAttribute { name: "iconScale"; value: 0.2 }}}
 Component.onCompleted: {
 myPathView.currentIndexChanged.connect(function(){
-indexChanged(myPathView.currentIndex)})}}
+indexChanged(myPathView.currentIndex);})}}
