@@ -77,8 +77,13 @@ public:
         }
     }
 
-    Q_INVOKABLE void hide(){ //copy the fake .rsc to C:\system\data and set it ReadOnly
-            close(true);
+
+//That's why I created this app:
+//What's app creates a .rsc which stores the content of the homescreen popup and shows it.
+//a lot of people don't like the popup, this function:
+//1. kills WhatsApp, 2. removes the original .rsc 3. copies a 0KB .rsc and sets it hidden+system+readonly
+//WhatsApp can't overwrite it and so it shows no more popup
+    Q_INVOKABLE void hide(){            close(true);
             reset();
             CAknConfirmationNote* hidden = new (ELeave) CAknConfirmationNote;
             QT_TRAP_THROWING(hidden->ExecuteLD(_L("Disabled the popup.")));
