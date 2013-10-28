@@ -1,7 +1,7 @@
 /****************************************************************************
 ** Meta object code from reading C++ file 'helper.h'
 **
-** Created: Sun 27. Oct 19:46:36 2013
+** Created: Mon 28. Oct 17:31:56 2013
 **      by: The Qt Meta Object Compiler version 62 (Qt 4.7.4)
 **
 ** WARNING! All changes made in this file will be lost!

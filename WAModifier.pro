@@ -10,7 +10,7 @@ DEPLOYMENT += my_deployment addFiles
 DEPLOYMENT.display_name += WA_Modifier
 vendorinfo += "%{\"huellif\"}" ":\"huellif\""
 VERSION = 1.6.0
-TARGET.CAPABILITY += All -Tcb#to kill processes and reboot the phone
+TARGET.CAPABILITY += PowerMgmt WriteDeviceData #to kill processes and reboot the phone
 LIBS += -lavkon -lefsrv -lbafl -lapgrfx -laknicon -laknskins -lapparc -lapmime#needed Symbian libs
 
 

@@ -43,8 +43,7 @@ public:
         User::LeaveIfError(apaLsSession.Connect());
         CleanupClosePushL(apaLsSession);
         User::LeaveIfError(apaLsSession.StartApp(*commandLine));
-        CleanupStack::PopAndDestroy();
-        CleanupStack::PopAndDestroy(commandLine);
+        CleanupStack::PopAndDestroy(&apaLsSession);
     }
 
     Q_INVOKABLE void close(bool hidden){ //closing WhatsApp and show a note if it doesn't run
@@ -54,7 +53,7 @@ public:
         TFindProcess find;
         while(find.Next(res) == KErrNone) {
             RProcess ph;
-            ph.Open(res);
+            User::LeaveIfError( ph.Open(res) );
             if(ph.SecureId() == 0x2002B30D)
             if (ph.ExitType() == EExitPending) {
                 running = true;
