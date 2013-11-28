@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>whatsapp_notifier.rsc</file>
         <file>splash.jpg</file>
         <file>qml/AboutDialog.qml</file>
         <file>qml/CloseDialog.qml</file>

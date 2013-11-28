@@ -9,9 +9,9 @@ my_deployment.pkg_prerules += vendorinfo
 DEPLOYMENT += my_deployment addFiles
 DEPLOYMENT.display_name += WA_Modifier
 vendorinfo += "%{\"huellif\"}" ":\"huellif\""
-VERSION = 1.6.0
+VERSION = 1.7.0
 TARGET.CAPABILITY += PowerMgmt WriteDeviceData #to kill processes and reboot the phone
-LIBS += -lavkon -lefsrv -lbafl -lapgrfx -laknicon -laknskins -lapparc -lapmime#needed Symbian libs
+LIBS += -lavkon -lefsrv -lbafl -laknicon -lStarterClient #needed Symbian libs
 
 
 #adding files to E:\icons in .sis
@@ -41,12 +41,8 @@ addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\TransViral.mif\" 
 addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\Weed.mif\" - \"E:\\icons\\Weed.mif\""
 }
 
-#embedding files into .exe
-RESOURCES += QRC.qrc
-
 #UI needs Symbian components
 CONFIG += qt-components
-
 
 #well the main code
 SOURCES += main.cpp
@@ -55,12 +51,12 @@ SOURCES += main.cpp
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
 qtcAddDeployment()
 
-#helper class
-
-
 #show .qml fils only in QtCreator, not in .sis build
 OTHER_FILES += qml/*.*
 
 #to prevent compiler errors with popups and Belle SDK
-#gccOption = "OPTION gcce -fpermissive"
-#MMP_RULES += gccOption
+gccOption = "OPTION gcce -fpermissive"
+MMP_RULES += gccOption
+
+RESOURCES += \
+    QRC.qrc
