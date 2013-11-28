@@ -2,32 +2,32 @@
 #define HELPER_H
 #include <QObject>
 
-//popups:
+//native Popups:
 #include <aknnotewrappers.h>
 #include <akndiscreetpopup.h>
 
-//file operations:
+//File operations:
 #include <bautils.h>
 #include <f32file.h>
 
-
-//taskkiller:
+//Task killer/launcher
 #include <apgtask.h>
 
-//icon cache
+//Clear AknIconSrv cache
 #include <akniconconfig.h>
 
-//reboot
+//native Reboot API
 #include <starterclient.h>
 
+_LIT(path, "C:\\system\\data\\whatsapp_notifier.rsc");
 
 class Helper : public QObject
 {
-    Q_OBJECT
+    Q_OBJECT    
 
 public:
 
-    Helper(QObject *parent = 0) : QObject(parent){ }
+    Helper(QObject *parent = 0) : QObject(parent){}
 
     Q_INVOKABLE void launch() const{ //launching WhatsApp
         RProcess proc;
@@ -71,7 +71,7 @@ public:
 //That's why I created this app:
 //What's app creates a .rsc which stores the content of the homescreen popup and shows it.
 //a lot of people don't like the popup, this function:
-//1. kills WhatsApp, 2. removes the original .rsc 3. copies a 0KB .rsc and sets it hidden+system+readonly
+//1. kills WhatsApp, 2. removes the original .rsc 3. a new .rsc and sets it hidden+system+readonly
 //WhatsApp can't overwrite it and so it shows no more popup
     Q_INVOKABLE void hide(){
         close(true);
@@ -84,16 +84,14 @@ public:
         User::LeaveIfError(fsSession.Connect());
 
         RFile rFile;
-        User::LeaveIfError(rFile.Create(fsSession, _L("C:\\system\\data\\whatsapp_notifier.rsc"), EFileRead));
+        User::LeaveIfError(rFile.Create(fsSession, path, EFileRead));
         rFile.Close();
 
-        User::LeaveIfError(fsSession.SetAtt((_L("C:\\system\\data\\whatsapp_notifier.rsc")),KEntryAttHidden|KEntryAttSystem,KEntryAttArchive));
+        User::LeaveIfError(fsSession.SetAtt(path ,KEntryAttHidden|KEntryAttSystem,KEntryAttArchive));
         CleanupStack::PopAndDestroy(&fsSession);
     }
 
     Q_INVOKABLE void reset() const{ //reset the attributes of the .rsc and remove it
-        _LIT(path, "C:\\system\\data\\whatsapp_notifier.rsc");
-
         RFs fsSession;
         CleanupClosePushL(fsSession);
         User::LeaveIfError(fsSession.Connect());
