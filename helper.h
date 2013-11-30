@@ -54,7 +54,7 @@ public:
 
         if (!running) {
             if (!hidden){
-                TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Error")), (_L("WhatsApp doesn't run.")),KAknsIIDNone, KNullDesC, 0, 0, 0x00000001));
+                TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Error")), (_L("WhatsApp isn't running.")),KAknsIIDNone, KNullDesC, 0, 0, 0x00000001));
             }
         }
         else {
