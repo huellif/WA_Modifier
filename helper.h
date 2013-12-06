@@ -20,6 +20,9 @@
 #include <starterclient.h>
 
 _LIT(path, "C:\\system\\data\\whatsapp_notifier.rsc");
+_LIT(c, "C:\\resource\\apps\\whatsapp_aif.mif");
+_LIT(e, "E:\\resource\\apps\\whatsapp_aif.mif");
+_LIT(f, "F:\\resource\\apps\\whatsapp_aif.mif");
 
 class Helper : public QObject
 {
@@ -29,16 +32,15 @@ public:
 
     Helper(QObject *parent = 0) : QObject(parent){}
 
-    Q_INVOKABLE void launch() const{ //launching WhatsApp
+    Q_INVOKABLE void launch() const { //launching WhatsApp
         RProcess proc;
         User::LeaveIfError(proc.Create(_L("WhatsApp.exe"),KNullDesC));
         proc.Resume();
         proc.Close();
     }
 
-    Q_INVOKABLE void close(bool hidden){ //closing WhatsApp and show a note if it doesn't run
+    Q_INVOKABLE void close(bool hidden) { //closing WhatsApp and show a note if it doesn't run
         TBool running = EFalse;
-
         TFullName res;
         TFindProcess find;
         while(find.Next(res) == KErrNone) {
@@ -73,7 +75,7 @@ public:
 //a lot of people don't like the popup, this function:
 //1. kills WhatsApp, 2. removes the original .rsc 3. a new .rsc and sets it hidden+system+readonly
 //WhatsApp can't overwrite it and so it shows no more popup
-    Q_INVOKABLE void hide(){
+    Q_INVOKABLE void hide() {
         close(true);
         reset();
         CAknConfirmationNote* hidden = new (ELeave) CAknConfirmationNote;
@@ -91,7 +93,7 @@ public:
         CleanupStack::PopAndDestroy(&fsSession);
     }
 
-    Q_INVOKABLE void reset() const{ //reset the attributes of the .rsc and remove it
+    Q_INVOKABLE void reset() const { //reset the attributes of the .rsc and remove it
         RFs fsSession;
         CleanupClosePushL(fsSession);
         User::LeaveIfError(fsSession.Connect());
@@ -123,22 +125,22 @@ public:
         RFs fsSession;
         CleanupClosePushL(fsSession);
         User::LeaveIfError(fsSession.Connect());
-        fsSession.SetAtt((_L("C:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-        fsSession.SetAtt((_L("E:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-        fsSession.SetAtt((_L("F:\\resource\\apps\\whatsapp_aif.mif")), KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt(c,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt(e,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt(f, KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
 
         CFileMan* fileMan=CFileMan::NewL(fsSession);
         CleanupStack::PushL(fileMan);
-        fileMan->Delete(_L("C:\\resource\\apps\\whatsapp_aif.mif"));
-        fileMan->Delete(_L("E:\\resource\\apps\\whatsapp_aif.mif"));
-        fileMan->Delete(_L("F:\\resource\\apps\\whatsapp_aif.mif"));
+        fileMan->Delete(c);
+        fileMan->Delete(e);
+        fileMan->Delete(f);
 
         QString path = "E:\\icons\\" + mif + ".mif";
         TPtrC16 ipath(reinterpret_cast<const TUint16*>(path.utf16()));
 
-        fileMan->Copy(ipath,(_L("C:\\resource\\apps\\whatsapp_aif.mif")));
-        fileMan->Copy(ipath,(_L("E:\\resource\\apps\\whatsapp_aif.mif")));
-        fileMan->Copy(ipath,(_L("F:\\resource\\apps\\whatsapp_aif.mif")));
+        fileMan->Copy(ipath,c);
+        fileMan->Copy(ipath,e);
+        fileMan->Copy(ipath,f);
 
         CleanupStack::PopAndDestroy(2);
 
@@ -151,15 +153,15 @@ public:
         RFs fsSession;
         CleanupClosePushL(fsSession);
         User::LeaveIfError(fsSession.Connect());
-        fsSession.SetAtt((_L("C:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-        fsSession.SetAtt((_L("E:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-        fsSession.SetAtt((_L("F:\\resource\\apps\\whatsapp_aif.mif")),KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt(c,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt(e,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt(f,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
 
         CFileMan* fileMan=CFileMan::NewL(fsSession);
         CleanupStack::PushL(fileMan);
-        fileMan->Delete(_L("C:\\resource\\apps\\whatsapp_aif.mif"));
-        fileMan->Delete(_L("E:\\resource\\apps\\whatsapp_aif.mif"));
-        fileMan->Delete(_L("F:\\resource\\apps\\whatsapp_aif.mif"));
+        fileMan->Delete(c);
+        fileMan->Delete(e);
+        fileMan->Delete(f);
 
         CleanupStack::PopAndDestroy(2);
 
