@@ -6,9 +6,8 @@ property int itemHeight:150
 property ListModel listModel
 signal indexChanged(int index)
 Component{
-id:appDelegate
+id:aD
 Flipable{
-id:myFlipable
 property bool flipped:false
 width:itemWidth; height:itemHeight
 z:PathView.z
@@ -33,7 +32,7 @@ preferredHighlightEnd:0.5
 focus:true
 interactive:true
 model:listModel
-delegate:appDelegate
+delegate:aD
 path:Path{
 startX:0
 startY:coverFlow.height / 2

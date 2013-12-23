@@ -1,20 +1,14 @@
-QT += declarative
 symbian {
-HEADERS += helper.h
-#free UID from 0xE range
 TARGET.UID3 = 0xE3359D3D
 
-#adding information for .sis
 my_deployment.pkg_prerules += vendorinfo
 DEPLOYMENT += my_deployment addFiles
 DEPLOYMENT.display_name += WA_Modifier
 vendorinfo += "%{\"huellif\"}" ":\"huellif\""
 VERSION = 1.7.0
-TARGET.CAPABILITY += PowerMgmt WriteDeviceData #to kill processes and reboot the phone
-LIBS += -lavkon -lefsrv -lbafl -laknicon -lStarterClient #needed Symbian libs
+TARGET.CAPABILITY += PowerMgmt WriteDeviceData
+LIBS += -lavkon -lefsrv -lbafl -laknicon -lStarterClient
 
-
-#adding files to E:\icons in .sis
 addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\BelleXblack.mif\" - \"E:\\icons\\BelleXblack.mif\""
 addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\BelleXblue.mif\" - \"E:\\icons\\BelleXblue.mif\""
 addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\BelleXdefault.mif\" - \"E:\\icons\\BelleXdefault.mif\""
@@ -41,22 +35,32 @@ addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\TransViral.mif\" 
 addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\Weed.mif\" - \"E:\\icons\\Weed.mif\""
 }
 
-#UI needs Symbian components
 CONFIG += qt-components
 
-#well the main code
-SOURCES += main.cpp
-
-#Symbian stuff
 include(qmlapplicationviewer/qmlapplicationviewer.pri)
 qtcAddDeployment()
 
-#show .qml fils only in QtCreator, not in .sis build
 OTHER_FILES += qml/*.*
 
-#to prevent compiler errors with popups and Belle SDK
-gccOption = "OPTION gcce -fpermissive"
-MMP_RULES += gccOption
+RESOURCES += QRC.qrc
 
-RESOURCES += \
-    QRC.qrc
+HEADERS += \
+    helper.h
+
+SOURCES += \
+    main.cpp \
+    helper.cpp
+
+
+QMAKE_CXXFLAGS.gcce += -std=c++0x
+MMP_RULES += "OPTION gcce -O3"
+MMP_RULES += "OPTION gcce -march=armv6"
+MMP_RULES += "OPTION gcce -mfpu=vfp"
+MMP_RULES += "OPTION gcce -mfloat-abi=softfp"
+MMP_RULES += "OPTION gcce -marm"
+MMP_RULES += "OPTION gcce -fpermissive"
+#MMP_RULES += "OPTION gcce -w"
+MMP_RULES += "OPTION gcce -ffast-math"
+
+DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS QT_NO_CAST_TO_ASCII
+

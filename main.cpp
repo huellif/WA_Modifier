@@ -12,16 +12,14 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     //Splashscreen
-    QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash.jpg"));
+    QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash.jpg"), Qt::WindowStaysOnTopHint);
     splash->show();
     splash->showMessage("Loading ...", Qt::AlignHCenter | Qt::AlignBottom, Qt::white);
-
     //creatining UI object
     QmlApplicationViewer viewer;
 
     //loading helper class for QtQuick UI to Qt/C++ access
     Helper helper;
-    viewer.setResizeMode(QDeclarativeView::SizeRootObjectToView);
     viewer.rootContext()->setContextProperty("Helper", &helper);
 
     //performance tweaks
@@ -31,13 +29,13 @@ int main(int argc, char *argv[])
     viewer.viewport()->setAttribute(Qt::WA_NoSystemBackground);
 
     //loading main.qml
-    viewer.setSource(QUrl("qrc:/qml/main.qml"));
+    viewer.setSource(QUrl(QLatin1String("qrc:/qml/main.qml")));
     viewer.showFullScreen();
 
     //remove splashscreen overlay
     splash->finish(&viewer);
     splash->deleteLater();
 
-    //app has to stay alive ;)
+    //app has to stay alive
     return app.exec();
 }

@@ -1,6 +1,5 @@
 <RCC>
     <qresource prefix="/">
-        <file>splash.jpg</file>
         <file>qml/AboutDialog.qml</file>
         <file>qml/CloseDialog.qml</file>
         <file>qml/CoverFlow.qml</file>
@@ -43,5 +42,6 @@
         <file>qml/pics/22.svg</file>
         <file>mifs/BlackBerry_flat.mif</file>
         <file>qml/pics/5.5.svg</file>
+        <file>splash.jpg</file>
     </qresource>
 </RCC>

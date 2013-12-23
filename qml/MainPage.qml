@@ -1,35 +1,35 @@
 import QtQuick 1.1
 import com.nokia.symbian 1.1
 Page{
-id: mainPage
+id:mainPage
 tools:ToolBarLayout{
 ToolButton{
 iconSource: "images/close.svg"
 onClicked:{
 if (set_tool == false) Qt.quit();
 dialog.create("CloseDialog.qml")}}
-ToolButton {
-iconSource: "toolbar-settings"
-onClicked: pageStack.push(Qt.resolvedUrl("settings.qml"))}
-ToolButton {
-iconSource: "images/info.svg"
-onClicked: dialog.create("AboutDialog.qml")}}
-Flickable {
-anchors.fill: parent
-contentHeight: channels.height
-Column {
-id: channels
-ListItem {
-onClicked: {
+ToolButton{
+iconSource:"toolbar-settings"
+onClicked:pageStack.push(Qt.resolvedUrl("settings.qml"))}
+ToolButton{
+iconSource:"images/info.svg"
+onClicked:dialog.create("AboutDialog.qml")}}
+Flickable{
+anchors.fill:parent
+contentHeight:c.height
+Column{
+id:c
+ListItem{
+onClicked:{
 Helper.launch()}
-ListItemText {
+ListItemText{
 role:"Title"
 text:"Launch WhatsApp"
 anchors.centerIn:parent}}
-ListItem {
-onClicked: {
+ListItem{
+onClicked:{
 Helper.close(false)}
-ListItemText {
+ListItemText{
 role:"Title"
 text:"Close WhatsApp"
 anchors.centerIn: parent}}
