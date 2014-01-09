@@ -8,6 +8,7 @@ vendorinfo += "%{\"huellif\"}" ":\"huellif\""
 VERSION = 1.7.0
 TARGET.CAPABILITY += PowerMgmt WriteDeviceData
 LIBS += -lavkon -lefsrv -lbafl -laknicon -lStarterClient
+ICON += WAModifier.svg
 
 addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\BelleXblack.mif\" - \"E:\\icons\\BelleXblack.mif\""
 addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\BelleXblue.mif\" - \"E:\\icons\\BelleXblue.mif\""
@@ -37,8 +38,7 @@ addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\Weed.mif\" - \"E:
 
 CONFIG += qt-components
 
-include(qmlapplicationviewer/qmlapplicationviewer.pri)
-qtcAddDeployment()
+QT += declarative
 
 OTHER_FILES += qml/*.*
 
@@ -52,7 +52,6 @@ SOURCES += \
     helper.cpp
 
 
-QMAKE_CXXFLAGS.gcce += -std=c++0x
 MMP_RULES += "OPTION gcce -O3"
 MMP_RULES += "OPTION gcce -march=armv6"
 MMP_RULES += "OPTION gcce -mfpu=vfp"
@@ -63,4 +62,4 @@ MMP_RULES += "OPTION gcce -fpermissive"
 MMP_RULES += "OPTION gcce -ffast-math"
 
 DEFINES += QT_USE_FAST_CONCATENATION QT_USE_FAST_OPERATOR_PLUS QT_NO_CAST_TO_ASCII
-
+DEFINES *= QT_USE_QSTRINGBUILDER

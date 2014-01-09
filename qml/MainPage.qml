@@ -4,9 +4,9 @@ Page{
 id:mainPage
 tools:ToolBarLayout{
 ToolButton{
-iconSource: "images/close.svg"
+iconSource:"images/close.svg"
 onClicked:{
-if (set_tool == false) Qt.quit();
+if(set_tool == false)Qt.quit();
 dialog.create("CloseDialog.qml")}}
 ToolButton{
 iconSource:"toolbar-settings"

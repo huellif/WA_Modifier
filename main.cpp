@@ -1,8 +1,10 @@
 #include <QtGui/QApplication>
-#include "qmlapplicationviewer.h"
-#include <QDeclarativeView>
+#include <QtDeclarative/QDeclarativeView>
+#include <QtDeclarative/QDeclarativeEngine>
 #include <QDeclarativeContext>
+
 #include "helper.h"
+
 #include <QtGui/QSplashScreen>
 #include <QtGui/QPixmap>
 
@@ -15,8 +17,9 @@ int main(int argc, char *argv[])
     QSplashScreen *splash = new QSplashScreen(QPixmap(":/splash.jpg"), Qt::WindowStaysOnTopHint);
     splash->show();
     splash->showMessage("Loading ...", Qt::AlignHCenter | Qt::AlignBottom, Qt::white);
+
     //creatining UI object
-    QmlApplicationViewer viewer;
+    QDeclarativeView viewer;
 
     //loading helper class for QtQuick UI to Qt/C++ access
     Helper helper;
@@ -33,8 +36,10 @@ int main(int argc, char *argv[])
     viewer.showFullScreen();
 
     //remove splashscreen overlay
-    splash->finish(&viewer);
-    splash->deleteLater();
+    delete splash;
+
+    //conecting the close signal
+    QObject::connect(viewer.engine(), SIGNAL(quit()), &viewer, SLOT(close()));
 
     //app has to stay alive
     return app.exec();

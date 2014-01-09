@@ -65,24 +65,31 @@ void Helper::hide()
     CAknConfirmationNote* hidden = new (ELeave) CAknConfirmationNote;
     QT_TRAP_THROWING(hidden->ExecuteLD(_L("Disabled the popup.")));
 
+    //fileserver stuff
     RFs fsSession;
     CleanupClosePushL(fsSession);
     User::LeaveIfError(fsSession.Connect());
 
+    //creating an empty file
     RFile rFile;
     User::LeaveIfError(rFile.Create(fsSession, path, EFileRead));
     rFile.Close();
 
+    //setting file attributes
     User::LeaveIfError(fsSession.SetAtt(path ,KEntryAttHidden|KEntryAttSystem,KEntryAttArchive));
+
+    //no memory leaks so far
     CleanupStack::PopAndDestroy(&fsSession);
 }
 
 void Helper::reset() const
 {
+    //fileserver stuff
     RFs fsSession;
     CleanupClosePushL(fsSession);
     User::LeaveIfError(fsSession.Connect());
 
+    //check if the file exits or not
     if (BaflUtils::FileExists(fsSession, path)){
         User::LeaveIfError(fsSession.SetAtt(path, KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden));
         CFileMan* fileMan=CFileMan::NewL(fsSession);
