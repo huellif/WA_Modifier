@@ -28,7 +28,7 @@ text:"Launch WhatsApp"
 anchors.centerIn:parent}}
 ListItem{
 onClicked:{
-Helper.close(false)}
+Helper.close(/*false*/)}
 ListItemText{
 role:"Title"
 text:"Close WhatsApp"

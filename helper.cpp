@@ -28,7 +28,7 @@ void Helper::launch() const
     proc.Close();
 }
 
-void Helper::close(bool hidden)
+void Helper::close(/*bool hidden*/)
 {
     TBool running = EFalse;
     TFullName res;
@@ -45,9 +45,9 @@ void Helper::close(bool hidden)
     }
 
     if (!running) {
-        if (!hidden){
+        //if (!hidden){
             TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Error")), (_L("WhatsApp isn't running.")),KAknsIIDNone, KNullDesC, 0, 0, 0x00000001));
-        }
+        //}
     }
     else {
         CAknGlobalNote* note = CAknGlobalNote::NewLC();

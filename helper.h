@@ -11,7 +11,7 @@ public:
 
     Q_INVOKABLE void launch() const;
 
-    Q_INVOKABLE void close(bool hidden);
+    Q_INVOKABLE void close(/*bool hidden*/);
 
     Q_INVOKABLE void hide();
 
