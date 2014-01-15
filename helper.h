@@ -27,11 +27,11 @@ public:
 
     Q_INVOKABLE void reboot() const;
 
-    Q_INVOKABLE void clear() const;
+    Q_INVOKABLE void clear();
 
 private:
 
-    void kill(const TPtrC &UID) const;
+    void kill(const int &a) const;
 };
 
 #endif // HELPER_H

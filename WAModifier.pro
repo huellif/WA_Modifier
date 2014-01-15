@@ -7,7 +7,7 @@ DEPLOYMENT.display_name += WA_Modifier
 vendorinfo += "%{\"huellif\"}" ":\"huellif\""
 VERSION = 1.7.0
 TARGET.CAPABILITY += PowerMgmt WriteDeviceData
-LIBS += -lavkon -lefsrv -lbafl -laknicon -lStarterClient
+LIBS += -lavkon -lefsrv -lbafl -laknicon -lStarterClient -laknnotify
 ICON += WAModifier.svg
 
 addFiles.pkg_postrules += "\"C:\\workspace\\WA_Modifier\\mifs\\BelleXblack.mif\" - \"E:\\icons\\BelleXblack.mif\""

@@ -3,6 +3,7 @@
 //native Popups:
 #include <aknnotewrappers.h>
 #include <akndiscreetpopup.h>
+#include <AknGlobalNote.h>
 
 //File operations:
 #include <bautils.h>
@@ -36,10 +37,10 @@ void Helper::close(bool hidden)
         RProcess ph;
         User::LeaveIfError( ph.Open(res) );
         if(ph.SecureId() == 0x2002B30D)
-        if (ph.ExitType() == EExitPending) {
-            running = ETrue;
-            break;
-        }
+            if (ph.ExitType() == EExitPending) {
+                running = ETrue;
+                break;
+            }
         ph.Close();
     }
 
@@ -49,21 +50,28 @@ void Helper::close(bool hidden)
         }
     }
     else {
-        CAknConfirmationNote* killed = new (ELeave) CAknConfirmationNote;
-        QT_TRAP_THROWING(killed->ExecuteLD(_L("Closed WhatsApp.")));
-
-        kill(_L("*[2002B306]*"));
-        kill(_L("*[2002B310]*"));
-        kill(_L("*[2002B30D]*"));
+        CAknGlobalNote* note = CAknGlobalNote::NewLC();
+        TRequestStatus iStatus2;
+        note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Closed WhatsApp."));
+        kill(537047814);
+        kill(537047824);
+        kill(537047821);
+        User::WaitForRequest(iStatus2);
+        CleanupStack::PopAndDestroy(note);
     }
 }
 
 void Helper::hide()
 {
-    close(true);
+    //close(true);
     reset();
-    CAknConfirmationNote* hidden = new (ELeave) CAknConfirmationNote;
-    QT_TRAP_THROWING(hidden->ExecuteLD(_L("Disabled the popup.")));
+
+    CAknGlobalNote* note = CAknGlobalNote::NewLC();
+    TRequestStatus iStatus2;
+    note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Disabled the popup."));
+    User::WaitForRequest(iStatus2);
+    CleanupStack::PopAndDestroy(note);
+
 
     //fileserver stuff
     RFs fsSession;
@@ -76,7 +84,7 @@ void Helper::hide()
     rFile.Close();
 
     //setting file attributes
-    User::LeaveIfError(fsSession.SetAtt(path ,KEntryAttHidden|KEntryAttSystem,KEntryAttArchive));
+    User::LeaveIfError(fsSession.SetAtt(path, KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden, KEntryAttNormal));
 
     //no memory leaks so far
     CleanupStack::PopAndDestroy(&fsSession);
@@ -91,7 +99,7 @@ void Helper::reset() const
 
     //check if the file exits or not
     if (BaflUtils::FileExists(fsSession, path)){
-        User::LeaveIfError(fsSession.SetAtt(path, KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden));
+        User::LeaveIfError(fsSession.SetAtt(path, KEntryAttNormal, KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden));
         CFileMan* fileMan=CFileMan::NewL(fsSession);
         CleanupStack::PushL(fileMan);
         fileMan->Delete(path);
@@ -103,11 +111,13 @@ void Helper::reset() const
 
 void Helper::resetNote()
 {
-    close(true);
+    //close(true);
     reset();
-
-    CAknConfirmationNote* note = new (ELeave) CAknConfirmationNote;
-    QT_TRAP_THROWING(note->ExecuteLD(_L("Enabled the popup.")));
+    CAknGlobalNote* note = CAknGlobalNote::NewLC();
+    TRequestStatus iStatus2;
+    note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Enabled the popup."));
+    User::WaitForRequest(iStatus2);
+    CleanupStack::PopAndDestroy(note);
 }
 
 void Helper::note() const
@@ -120,11 +130,11 @@ void Helper::icon(QString mif) const
     RFs fsSession;
     CleanupClosePushL(fsSession);
     User::LeaveIfError(fsSession.Connect());
-    fsSession.SetAtt(c,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-    fsSession.SetAtt(e,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+    fsSession.SetAtt(c, KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+    fsSession.SetAtt(e, KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
     fsSession.SetAtt(f, KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
 
-    CFileMan* fileMan=CFileMan::NewL(fsSession);
+    CFileMan* fileMan = CFileMan::NewL(fsSession);
     CleanupStack::PushL(fileMan);
     fileMan->Delete(c);
     fileMan->Delete(e);
@@ -161,8 +171,12 @@ void Helper::del() const
 
     CleanupStack::PopAndDestroy(2);
 
-    CAknConfirmationNote* note = new (ELeave) CAknConfirmationNote;
-    QT_TRAP_THROWING(note->ExecuteLD(_L("Removed all whatsapp_aif.mif files.")));
+    CAknGlobalNote* note = CAknGlobalNote::NewLC();
+    TRequestStatus iStatus2;
+    note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Removed all whatsapp_aif.mif files."));
+
+    User::WaitForRequest(iStatus2);
+    CleanupStack::PopAndDestroy(note);
 }
 
 void Helper::reboot() const
@@ -173,24 +187,46 @@ void Helper::reboot() const
     starter.Close();
 }
 
-void Helper::clear() const
+void Helper::clear()
 {
-    close(false);
+    //close(false);
     AknIconConfig::EnableAknIconSrvCache(EFalse);
     AknIconConfig::EnableAknIconSrvCache(ETrue);
 
-    CAknConfirmationNote* note = new (ELeave) CAknConfirmationNote;
-    QT_TRAP_THROWING(note->ExecuteLD(_L("Done. Cleared icon cache. Re-add the icon to homescreen to show the new one.")));
+    CAknGlobalNote* note = CAknGlobalNote::NewLC();
+    TRequestStatus iStatus2;
+    note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Done. Cleared icon cache. Re-add the icon to homescreen to show the new one."));
+
+    User::WaitForRequest(iStatus2);
+    CleanupStack::PopAndDestroy(note);
 }
 
-void Helper::kill(const TPtrC &UID) const
+void Helper::kill(const int &a) const
 {
-    TFullName res;
-    TFindProcess find(UID);
-    while(find.Next(res) == KErrNone){
-        RProcess ph;
-        ph.Open(find);
-        ph.Kill(KErrNone);
-        ph.Close();
+    TInt ret = KErrNone;
+
+    TFullName pName;
+    TFindProcess finder(_L("*"));
+
+    TUid tUid = {a};
+
+    while((ret = finder.Next(pName)) == KErrNone)
+    {
+        if (pName == KNullDesC)
+            break;
+
+        RProcess process;
+        ret = process.Open(pName);
+        if (ret != KErrNone)
+            return;
+
+        if (tUid == process.Type()[2])
+        {
+            process.Kill(0);
+            process.Close();
+            break;
+        }
+
+        process.Close();
     }
 }
