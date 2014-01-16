@@ -31,7 +31,7 @@ public:
 
 private:
 
-    void kill(const int &a) const;
+    void kill(const TDesC &process) const;
 };
 
 #endif // HELPER_H

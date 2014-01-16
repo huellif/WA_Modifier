@@ -46,16 +46,18 @@ void Helper::close(/*bool hidden*/)
 
     if (!running) {
         //if (!hidden){
-            TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Error")), (_L("WhatsApp isn't running.")),KAknsIIDNone, KNullDesC, 0, 0, 0x00000001));
+        TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Error")), (_L("WhatsApp isn't running.")),KAknsIIDNone, KNullDesC, 0, 0, 0x00000001));
         //}
     }
     else {
         CAknGlobalNote* note = CAknGlobalNote::NewLC();
         TRequestStatus iStatus2;
         note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Closed WhatsApp."));
-        kill(537047814);
-        kill(537047824);
-        kill(537047821);
+
+        kill(_L("*[2002B306]*"));
+        kill(_L("*[2002B310]*"));
+        kill(_L("*[2002B30D]*"));
+
         User::WaitForRequest(iStatus2);
         CleanupStack::PopAndDestroy(note);
     }
@@ -201,32 +203,15 @@ void Helper::clear()
     CleanupStack::PopAndDestroy(note);
 }
 
-void Helper::kill(const int &a) const
+void Helper::kill(const TDesC &process) const
 {
-    TInt ret = KErrNone;
-
-    TFullName pName;
-    TFindProcess finder(_L("*"));
-
-    TUid tUid = {a};
-
-    while((ret = finder.Next(pName)) == KErrNone)
+    TFullName res;
+    TFindProcess find(process);
+    while(find.Next(res) == KErrNone)
     {
-        if (pName == KNullDesC)
-            break;
-
-        RProcess process;
-        ret = process.Open(pName);
-        if (ret != KErrNone)
-            return;
-
-        if (tUid == process.Type()[2])
-        {
-            process.Kill(0);
-            process.Close();
-            break;
-        }
-
-        process.Close();
+        RProcess ph;
+        User::LeaveIfError(ph.Open(find));
+        ph.Kill(KErrNone);
+        ph.Close();
     }
 }
