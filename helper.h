@@ -11,17 +11,11 @@ public:
 
     Q_INVOKABLE void launch() const;
 
-    Q_INVOKABLE void close(/*bool hidden*/);
-
-    Q_INVOKABLE void hide();
-
-    Q_INVOKABLE void reset() const;
-
-    Q_INVOKABLE void resetNote();
+    Q_INVOKABLE void close() const;
 
     Q_INVOKABLE void note() const;
 
-    Q_INVOKABLE void icon(QString mif) const;
+    Q_INVOKABLE void icon(const QString &mif) const;
 
     Q_INVOKABLE void del() const;
 
@@ -31,7 +25,11 @@ public:
 
 private:
 
-    void kill(const TDesC &process) const;
+    TAny kill(const TDesC &process) const;
+
+    TBool remove() const;
+
+    TAny error() const;
 };
 
 #endif // HELPER_H

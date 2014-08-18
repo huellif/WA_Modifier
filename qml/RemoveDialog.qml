@@ -7,4 +7,4 @@ acceptButtonText:"Remove"
 rejectButtonText:"Cancel"
 onAccepted:Helper.del()
 Component.onCompleted:open()
-onStatusChanged:if (status === DialogStatus.Closing) destroy()}
+onStatusChanged:if(status === DialogStatus.Closing)destroy()}

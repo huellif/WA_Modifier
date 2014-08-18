@@ -28,7 +28,7 @@ void Helper::launch() const
     proc.Close();
 }
 
-void Helper::close(/*bool hidden*/)
+void Helper::close() const
 {
     TBool running = EFalse;
     TFullName res;
@@ -44,12 +44,14 @@ void Helper::close(/*bool hidden*/)
         ph.Close();
     }
 
-    if (!running) {
-        //if (!hidden){
+    if (!running)
+    {
         TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Error")), (_L("WhatsApp isn't running.")),KAknsIIDNone, KNullDesC, 0, 0, 0x00000001));
-        //}
+
     }
-    else {
+
+    else
+    {
         CAknGlobalNote* note = CAknGlobalNote::NewLC();
         TRequestStatus iStatus2;
         note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Closed WhatsApp."));
@@ -63,116 +65,52 @@ void Helper::close(/*bool hidden*/)
     }
 }
 
-void Helper::hide()
-{
-    //close(true);
-    reset();
-
-    CAknGlobalNote* note = CAknGlobalNote::NewLC();
-    TRequestStatus iStatus2;
-    note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Disabled the popup."));
-    User::WaitForRequest(iStatus2);
-    CleanupStack::PopAndDestroy(note);
-
-
-    //fileserver stuff
-    RFs fsSession;
-    CleanupClosePushL(fsSession);
-    User::LeaveIfError(fsSession.Connect());
-
-    //creating an empty file
-    RFile rFile;
-    User::LeaveIfError(rFile.Create(fsSession, path, EFileRead));
-    rFile.Close();
-
-    //setting file attributes
-    User::LeaveIfError(fsSession.SetAtt(path, KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden, KEntryAttNormal));
-
-    //no memory leaks so far
-    CleanupStack::PopAndDestroy(&fsSession);
-}
-
-void Helper::reset() const
-{
-    //fileserver stuff
-    RFs fsSession;
-    CleanupClosePushL(fsSession);
-    User::LeaveIfError(fsSession.Connect());
-
-    //check if the file exits or not
-    if (BaflUtils::FileExists(fsSession, path)){
-        User::LeaveIfError(fsSession.SetAtt(path, KEntryAttNormal, KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden));
-        CFileMan* fileMan=CFileMan::NewL(fsSession);
-        CleanupStack::PushL(fileMan);
-        fileMan->Delete(path);
-        CleanupStack::PopAndDestroy(fileMan);
-    }
-
-    CleanupStack::PopAndDestroy(&fsSession);
-}
-
-void Helper::resetNote()
-{
-    //close(true);
-    reset();
-    CAknGlobalNote* note = CAknGlobalNote::NewLC();
-    TRequestStatus iStatus2;
-    note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Enabled the popup."));
-    User::WaitForRequest(iStatus2);
-    CleanupStack::PopAndDestroy(note);
-}
-
 void Helper::note() const
 {
     TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Info:")), (_L("You have to enable Open4All patch!")),KAknsIIDNone, KNullDesC, 0, 0, 0x00000001));
 }
 
-void Helper::icon(QString mif) const
+void Helper::icon(const QString &mif) const
 {
-    RFs fsSession;
-    CleanupClosePushL(fsSession);
-    User::LeaveIfError(fsSession.Connect());
-    fsSession.SetAtt(c, KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-    fsSession.SetAtt(e, KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-    fsSession.SetAtt(f, KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+    if(remove())
+    {
+        RFs fsSession;
+        CleanupClosePushL(fsSession);
+        User::LeaveIfError(fsSession.Connect());
+        CFileMan* fileMan = CFileMan::NewL(fsSession);
+        CleanupStack::PushL(fileMan);
 
-    CFileMan* fileMan = CFileMan::NewL(fsSession);
-    CleanupStack::PushL(fileMan);
-    fileMan->Delete(c);
-    fileMan->Delete(e);
-    fileMan->Delete(f);
+        TPtrC16 ipath(reinterpret_cast<const TUint16*>(QString("E:\\icons\\" + mif + ".mif").utf16()));
 
-    QString path = "E:\\icons\\" + mif + ".mif";
-    TPtrC16 ipath(reinterpret_cast<const TUint16*>(path.utf16()));
+        TBool success = EFalse;
+        if(fileMan->Copy(ipath,c) == KErrNone) success = ETrue;
+        if(fileMan->Copy(ipath,e) == KErrNone) success = ETrue;
+        if(fileMan->Copy(ipath,f) == KErrNone) success = ETrue;
 
-    fileMan->Copy(ipath,c);
-    fileMan->Copy(ipath,e);
-    fileMan->Copy(ipath,f);
+        CleanupStack::PopAndDestroy(fileMan);
+        CleanupStack::PopAndDestroy(&fsSession);
 
-    CleanupStack::PopAndDestroy(2);
-
-    QString newmif = "Copied " + mif + ".mif";
-    TPtrC16 note(reinterpret_cast<const TUint16*>(newmif.utf16()));
-    TRAP_IGNORE(CAknDiscreetPopup::ShowGlobalPopupL((_L("Done.")), note ,KAknsIIDNone, KNullDesC, 0, 0, 0x00000001));
+        if(success)
+        {
+            CAknGlobalNote* note = CAknGlobalNote::NewLC();
+            TRequestStatus iStatus2;
+            note->ShowNoteL(iStatus2,
+                            EAknGlobalConfirmationNote,
+                            TPtrC16 (reinterpret_cast<const TText*>(QString("Copied " + mif + ".mif").constData()))
+                            );
+            User::WaitForRequest(iStatus2);
+            CleanupStack::PopAndDestroy(note);
+        }
+        else
+        {
+            error();
+        }
+    }
 }
 
 void Helper::del() const
 {
-    RFs fsSession;
-    CleanupClosePushL(fsSession);
-    User::LeaveIfError(fsSession.Connect());
-    fsSession.SetAtt(c,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-    fsSession.SetAtt(e,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-    fsSession.SetAtt(f,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
-
-    CFileMan* fileMan=CFileMan::NewL(fsSession);
-    CleanupStack::PushL(fileMan);
-    fileMan->Delete(c);
-    fileMan->Delete(e);
-    fileMan->Delete(f);
-
-    CleanupStack::PopAndDestroy(2);
-
+    if(!remove()) return;
     CAknGlobalNote* note = CAknGlobalNote::NewLC();
     TRequestStatus iStatus2;
     note->ShowNoteL(iStatus2, EAknGlobalConfirmationNote, _L("Removed all whatsapp_aif.mif files."));
@@ -191,7 +129,6 @@ void Helper::reboot() const
 
 void Helper::clear()
 {
-    //close(false);
     AknIconConfig::EnableAknIconSrvCache(EFalse);
     AknIconConfig::EnableAknIconSrvCache(ETrue);
 
@@ -203,7 +140,7 @@ void Helper::clear()
     CleanupStack::PopAndDestroy(note);
 }
 
-void Helper::kill(const TDesC &process) const
+TAny Helper::kill(const TDesC &process) const
 {
     TFullName res;
     TFindProcess find(process);
@@ -214,4 +151,50 @@ void Helper::kill(const TDesC &process) const
         ph.Kill(KErrNone);
         ph.Close();
     }
+}
+
+TBool Helper::remove() const
+{
+    TBool status = EFalse;
+    RFs fsSession;
+    CleanupClosePushL(fsSession);
+    User::LeaveIfError(fsSession.Connect());
+
+    if(BaflUtils::FileExists(fsSession, _L("Z:\\sys\\bin\\avkon.dll")))
+    {
+
+        fsSession.SetAtt(c,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt(e,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+        fsSession.SetAtt(f,KEntryAttNormal,KEntryAttReadOnly | KEntryAttSystem | KEntryAttHidden);
+
+        CFileMan* fileMan=CFileMan::NewL(fsSession);
+        CleanupStack::PushL(fileMan);
+
+        fileMan->Delete(c);
+        fileMan->Delete(e);
+        fileMan->Delete(f);
+
+        CleanupStack::PopAndDestroy(fileMan);
+
+        status = ETrue;
+    }
+    else
+    {
+        error();
+    }
+    CleanupStack::PopAndDestroy(&fsSession);
+    return status;
+}
+
+TAny Helper::error() const
+{
+    CAknGlobalNote* note = CAknGlobalNote::NewLC();
+    TRequestStatus iStatus2;
+    note->ShowNoteL(iStatus2,
+                    EAknGlobalErrorNote,
+                    _L("An error occurred, please enable Open4All.")
+                    );
+
+    User::WaitForRequest(iStatus2);
+    CleanupStack::PopAndDestroy(note);
 }

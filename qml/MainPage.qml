@@ -28,23 +28,11 @@ text:"Launch WhatsApp"
 anchors.centerIn:parent}}
 ListItem{
 onClicked:{
-Helper.close(/*false*/)}
+Helper.close()}
 ListItemText{
 role:"Title"
 text:"Close WhatsApp"
-anchors.centerIn: parent}}
-ListItem{
-onClicked:Helper.hide()
-ListItemText{
-role:"Title"
-text:"Hide homescreen popup"
-anchors.centerIn: parent}}
-ListItem{
-onClicked: Helper.resetNote()
-ListItemText{
-role:"Title"
-text:"Show homescreen popup"
-anchors.centerIn: parent}}
+anchors.centerIn:parent}}
 ListItem{
 onClicked:{
 pageStack.push(Qt.resolvedUrl("icons.qml"));
@@ -52,7 +40,7 @@ Helper.note()}
 ListItemText{
 role:"Title"
 text:"Change icons"
-anchors.centerIn: parent}}
+anchors.centerIn:parent}}
 Label{
 text:"\nWhatsApp Modifier\ncreated by huellif"
 anchors.horizontalCenter: parent.horizontalCenter}}}}
